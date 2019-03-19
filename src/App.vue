@@ -3,7 +3,8 @@
     <nav class="navbar is-white topNav">
       <div class="container">
         <div class="navbar-brand">
-          <h1>Activity Planner</h1>
+          <!-- <h1>{{ watchedAppName }}</h1> -->
+          <h1>{{ fullAppName }}</h1>
         </div>
       </div>
     </nav>
@@ -126,11 +127,14 @@ export default {
   data(){
     return {
       isFormDisplayed: false,
-      message: 'Hello Vue!',
-      titleMessage: 'Title Message Vue!!!!!',
-      isTextDisplayed: true,
+      creator: 'Leiwu123',
+      appName: 'Activity Planner',
+      // watchedAppName: 'Activity Planner by Filip Jerga',
+      // message: 'Hello Vue!',
+      // titleMessage: 'Title Message Vue!!!!!',
+      // isTextDisplayed: true,
       //items: [1,2,3,4,5,6],
-      items: {1: {name: 'Filip'}, 2: {name: 'John'}},
+      // items: {1: {name: 'Filip'}, 2: {name: 'John'}},
       newActivity: {
         title: '',
         notes: ''
@@ -169,26 +173,41 @@ export default {
   computed: {
     isFormValid() {
       return this.newActivity.title && this.newActivity.notes
+    },
+    fullAppName() {
+      return this.appName + ' by ' + this.creator
     }
   },
+  // watch: {
+  //   creator(val) {
+  //     debugger
+  //     console.log(val)
+  //     this.watchedAppName = this.appName + ' by ' + val
+  //   },
+  //   appName(val) {
+  //     debugger
+  //     console.log(val)
+  //     this.watchedAppName = val + ' by ' + this.creator
+  //   }
+  // },
   created () {
     this.activities = fetchActivities(),
     this.user = fetchUser(),
-    this.categories = fetchCategories(),
-    console.log(this.user);
-    console.log(this.categories),
-    console.log(this.activities)
+    this.categories = fetchCategories()
+    // console.log(this.user);
+    // console.log(this.categories),
+    // console.log(this.activities)
   },
   methods: {
-          toggleTextDisplay(){
-            this.isTextDisplayed = !this.isTextDisplayed
-          },
+          // toggleTextDisplay(){
+          //   this.isTextDisplayed = !this.isTextDisplayed
+          // },
           toggleFormDisplay(){
             this.isFormDisplayed = !this.isFormDisplayed
           },
-          yell: function() {
-            alert('meow!!!')
-          }, 
+          // yell: function() {
+          //   alert('meow!!!')
+          // }, 
           createActivity() {
             console.log(this.newActivity)
           },
