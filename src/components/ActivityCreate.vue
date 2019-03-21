@@ -1,0 +1,124 @@
+<template>
+  <div class="activityCreateForm">
+    <a
+      v-if="!isFormDisplayed"
+      class="button is-primary is-block is-alt is-large"
+      href="#"
+      @click="toggleFormDisplay"
+    >New Activity</a>
+    <div
+      v-if="isFormDisplayed"
+      class="create-form"
+    >
+      <h2>Create Activity</h2>
+      <form>
+        <div class="field">
+          <label class="label">Title</label>
+          <div class="control">
+            <input
+              v-model="newActivity.title"
+              class="input"
+              type="text"
+              placeholder="Read a Book"
+            >
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Notes</label>
+          <div class="control">
+            <textarea
+              v-model="newActivity.notes"
+              class="textarea"
+              placeholder="Write some notes here"
+            />
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Notes</label>
+          <div class="control">
+            <select v-model="newActivity.category" class="select">
+              <option disabled value="">Please Select One</option>
+              <option v-for="category in categories" :key="category.id">{{ category.text }}</option>
+              <!-- <option v-for="category in categories" :key="category.key" :value="category.id">{{ category.text }}</option> -->
+            </select>
+          </div>
+        </div>
+        <div class="field is-grouped">
+          <div class="control">
+            <button
+              class="button is-link"
+              :disabled="!isFormValid"
+              @click.prevent="createActivity"
+            >
+              Create Activity
+            </button>
+          </div>
+          <div class="control">
+            <button
+              class="button is-text"
+              @click.prevent="toggleFormDisplay"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { createActivityAPI } from '@/api'
+import { setTimeout } from 'timers';
+  export default {
+    props: {
+      categories: {
+        type: Object,
+        required: true
+      }
+    },
+    data() {
+      return {
+        isFormDisplayed: false,
+        newActivity: {
+          title: '',
+          notes: '',
+          category: ''
+        },
+      }
+    },
+    computed: {
+      isFormValid() {
+        return this.newActivity.title && this.newActivity.notes && this.newActivity.category
+      }
+    },
+    methods: {  
+      toggleFormDisplay(){
+        this.isFormDisplayed = !this.isFormDisplayed
+      },
+      createActivity() {
+        // const activity = createActivity(this.newActivity)
+        // console.log({ ...activity } )
+        // this.$emit('activityCreated', {...activity})
+        const copiedActivity = {...this.newActivity}
+        // console.log(copiedActivity)
+        createActivityAPI(copiedActivity)
+          .then((activity) => {
+          this.$emit('activityCreated', {...activity})
+          })
+        // setTimeout(() => {
+        //   this.newActivity.title = ''
+        //   this.newActivity.notes = ''
+        //   this.newActivity.category = ''}, 2000);
+        this.newActivity.title = ''
+        this.newActivity.notes = ''
+        this.newActivity.category = ''
+      },
+    }
+
+  }
+</script>
+
+<style scoped>
+
+</style>

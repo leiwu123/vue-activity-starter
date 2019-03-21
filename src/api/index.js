@@ -18,17 +18,51 @@ export const fetchActivities = () => {
       category: '1546969049',
       createdAt: 1546969144391,
       updatedAt: 1546969144391
+    },
+    '1546969262': {
+      id: '1546969232',
+      title: 'Read Linux Books',
+      notes: 'These books are super nice',
+      progress: 0,
+      category: '1546969049',
+      createdAt: 1546969155391,
+      updatedAt: 1546969123391
     }
     
   }
 }
 
+const generateUid = () => Math.floor(new Date() * Math.random())
+
+// const generateUid = function () {
+//   return Math.floor(new Date() * Math.random())
+// } 
+
+
+export const createActivityAPI = (activity) => {
+  activity.id = generateUid()
+  activity.progress = 0
+  activity.createdAt = new Date()
+  activity.updatedAt = new Date()
+
+  return new Promise((resolve, reject) => {
+    resolve(activity)
+  })
+  // return activity
+}
+
 export const fetchCategories = () => {
   return {
-    '1546969049': {text: 'books'},
-    '1546969225': {text: 'movies'}
+    '1546969049': {text: 'books', id:'1546969049'  },
+    '1546969225': {text: 'movies', id: '1546969225' }
   }
 }
+// export const fetchCategories = () => {
+//   return {
+//     '1546969049': {text: 'books', },
+//     '1546969225': {text: 'movies', }
+//   }
+// }
 
 export const fetchUser = () => {
   return {
@@ -36,3 +70,4 @@ export const fetchUser = () => {
     id: '-Aj34jknvncx98812',
   }
 }
+

@@ -46,60 +46,9 @@
       </div> -->
       <div class="columns">
         <div class="column is-3">
-          <a
-            v-if="!isFormDisplayed"
-            class="button is-primary is-block is-alt is-large"
-            href="#"
-            @click="toggleFormDisplay"
-          >New Activity</a>
-          <div
-            v-if="isFormDisplayed"
-            class="create-form"
-          >
-            <h2>Create Activity</h2>
-            <form>
-              <div class="field">
-                <label class="label">Title</label>
-                <div class="control">
-                  <input
-                    v-model="newActivity.title"
-                    class="input"
-                    type="text"
-                    placeholder="Read a Book"
-                  >
-                </div>
-              </div>
-              <div class="field">
-                <label class="label">Notes</label>
-                <div class="control">
-                  <textarea
-                    v-model="newActivity.notes"
-                    class="textarea"
-                    placeholder="Write some notes here"
-                  />
-                </div>
-              </div>
-              <div class="field is-grouped">
-                <div class="control">
-                  <button
-                    class="button is-link"
-                    :disabled="!isFormValid"
-                    @click="createActivity"
-                  >
-                    Create Activity
-                  </button>
-                </div>
-                <div class="control">
-                  <button
-                    class="button is-text"
-                    @click="toggleFormDisplay"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
+          <!-- Activity Form -->
+          <activityCreate @activityCreated="addActivity" :categories="categories" />
+          <!-- Activity Form END -->
         </div>
         <div class="column is-9">
           <div class="box content">
@@ -108,6 +57,8 @@
               :key="activity.id"
               :activity="activity"
             />
+            <div class="activity-length">Currently {{ activityLength }} activities</div>
+            <div class="activity-motivation">{{ activityMotivation }}</div>
           </div>
         </div>
       </div>
@@ -116,17 +67,20 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import ActivityItem from './components/ActivityItem'
 // import ActivityItem from '@/components/ActivityItem' //@ points to src folder
+import ActivityCreate from '@/components/ActivityCreate'
 import  { fetchActivities, fetchCategories, fetchUser } from './api'   // short for ./api/index
 // import { fetchActivities } from '@/api'   // short for ./api/index
 
+
 export default {
   name: 'App',
-  components: {ActivityItem},
+  components: {ActivityItem, ActivityCreate},
   data(){
     return {
-      isFormDisplayed: false,
+      // isFormDisplayed: false,
       creator: 'Leiwu123',
       appName: 'Activity Planner',
       // watchedAppName: 'Activity Planner by Filip Jerga',
@@ -135,10 +89,11 @@ export default {
       // isTextDisplayed: true,
       //items: [1,2,3,4,5,6],
       // items: {1: {name: 'Filip'}, 2: {name: 'John'}},
-      newActivity: {
-        title: '',
-        notes: ''
-      },
+      // newActivity: {
+      //   title: '',
+      //   notes: '',
+      //   category: ''
+      // },
       user: {
         // name: 'Filip Jerga',
         // id: '-Aj34jknvncx98812',
@@ -176,6 +131,24 @@ export default {
     },
     fullAppName() {
       return this.appName + ' by ' + this.creator
+    },
+    activityLength() {
+      // debugger
+      // const activitiesKeyArray = Object.keys(this.activities)
+      // console.log(activitiesKeyArray)
+      // const activityLength = activitiesKeyArray.length
+      // return activityLength
+
+      return Object.keys(this.activities).length
+    },
+    activityMotivation() {
+      if (this.activityLength && this.activityLength <5) {
+        return 'Nice to see some goals (:'
+      } else if (this.activityLength >= 5) {
+        return 'So many activities! Good Job!'
+      } else {
+        return 'No activities, so sad!'
+      }
     }
   },
   // watch: {
@@ -199,18 +172,25 @@ export default {
     // console.log(this.activities)
   },
   methods: {
+    addActivity(newActivity) {
+      // debugger
+      // this.activities[newActivity.id] = newActivity
+      // console.log(this.activities)
+      Vue.set(this.activities, newActivity.id, newActivity)
+      
+    }
           // toggleTextDisplay(){
           //   this.isTextDisplayed = !this.isTextDisplayed
           // },
-          toggleFormDisplay(){
-            this.isFormDisplayed = !this.isFormDisplayed
-          },
+          // toggleFormDisplay(){
+          //   this.isFormDisplayed = !this.isFormDisplayed
+          // },
           // yell: function() {
           //   alert('meow!!!')
           // }, 
-          createActivity() {
-            console.log(this.newActivity)
-          },
+          // createActivity() {
+          //   console.log(this.newActivity)
+          // },
           // isFormValid() {
           //   return this.newActivity.title && this.newActivity.notes
           // }
@@ -236,6 +216,12 @@ body {
 }
 footer {
   background-color: #f2f6fa !important;
+}
+.activity-motivation {
+  float: right;
+}
+.activity-length {
+  display: inline-block;
 }
 .example-wrapper {
   margin-left: 30px;
