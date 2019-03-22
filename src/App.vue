@@ -164,7 +164,10 @@ export default {
   //   }
   // },
   created () {
-    this.activities = fetchActivities(),
+    fetchActivities()
+      .then(activities => {
+        this.activities = activities
+      })
     this.user = fetchUser(),
     this.categories = fetchCategories()
     // console.log(this.user);

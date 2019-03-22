@@ -104,7 +104,7 @@ import { setTimeout } from 'timers';
         // console.log(copiedActivity)
         createActivityAPI(copiedActivity)
           .then((activity) => {
-          this.$emit('activityCreated', {...activity})
+          this.$emit('activityCreated', activity)
           })
         // setTimeout(() => {
         //   this.newActivity.title = ''
