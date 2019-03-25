@@ -89,30 +89,36 @@ import { setTimeout } from 'timers';
     },
     computed: {
       isFormValid() {
-        return this.newActivity.title && this.newActivity.notes && this.newActivity.category
+        return this.newActivity.title 
+            && this.newActivity.notes 
+            && this.newActivity.category
       }
     },
     methods: {  
       toggleFormDisplay(){
         this.isFormDisplayed = !this.isFormDisplayed
       },
+      resetActivity () {
+        this.newActivity.title = ''
+        this.newActivity.notes = ''
+        this.newActivity.category = ''
+      },
       createActivity() {
         // const activity = createActivity(this.newActivity)
         // console.log({ ...activity } )
         // this.$emit('activityCreated', {...activity})
-        const copiedActivity = {...this.newActivity}
         // console.log(copiedActivity)
-        createActivityAPI(copiedActivity)
+        createActivityAPI({...this.newActivity})
           .then((activity) => {
-          this.$emit('activityCreated', activity)
+            this.resetActivity()
+            this.isFormDisplayed = false
+            this.$emit('activityCreated', {...activity})
           })
         // setTimeout(() => {
         //   this.newActivity.title = ''
         //   this.newActivity.notes = ''
         //   this.newActivity.category = ''}, 2000);
-        this.newActivity.title = ''
-        this.newActivity.notes = ''
-        this.newActivity.category = ''
+        
       },
     }
 

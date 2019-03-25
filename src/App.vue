@@ -47,7 +47,7 @@
       <div class="columns">
         <div class="column is-3">
           <!-- Activity Form -->
-          <activityCreate @activityCreated="addActivity" :categories="categories" />
+          <activityCreate :categories="categories" @activityCreated="addActivity" />
           <!-- Activity Form END -->
         </div>
         <div class="column is-9">
@@ -167,6 +167,9 @@ export default {
     fetchActivities()
       .then(activities => {
         this.activities = activities
+      })
+      .catch(err => {
+        console.log(err)
       })
     this.user = fetchUser(),
     this.categories = fetchCategories()
