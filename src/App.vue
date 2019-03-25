@@ -3,31 +3,11 @@
     <nav class="navbar is-white topNav">
       <div class="container">
         <div class="navbar-brand">
-          <!-- <h1>{{ watchedAppName }}</h1> -->
           <h1>{{ fullAppName }}</h1>
         </div>
       </div>
     </nav>
-    <nav class="navbar is-white">
-      <div class="container">
-        <div class="navbar-menu">
-          <div class="navbar-start">
-            <a
-              class="navbar-item is-active"
-              href="#"
-            >Newest</a>
-            <a
-              class="navbar-item"
-              href="#"
-            >In Progress</a>
-            <a
-              class="navbar-item"
-              href="#"
-            >Finished</a>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <TheNavBar />
     <section class="container">
       <!-- <div class="example-wrapper">
         <div v-if="isTextDisplayed">
@@ -51,14 +31,25 @@
           <!-- Activity Form END -->
         </div>
         <div class="column is-9">
-          <div class="box content">
-            <ActivityItem
-              v-for="activity in activities"
-              :key="activity.id"
-              :activity="activity"
-            />
-            <div class="activity-length">Currently {{ activityLength }} activities</div>
-            <div class="activity-motivation">{{ activityMotivation }}</div>
+          <div class="box content" :class="{fetching: isFetching, 'has-error': error}">
+            <div v-if="error">
+              {{ error }}
+            </div>
+            <div v-else>
+              <div v-if="isFetching">
+                Loading...
+              </div>
+              <ActivityItem
+                v-for="activity in activities"
+                :key="activity.id"
+                :activity="activity"
+              />
+            </div>
+            <div v-if="!isFetching">
+              <div class="activity-length">Currently {{ activityLength }} activities</div>
+              <div class="activity-motivation">{{ activityMotivation }}</div>
+            </div>
+            
           </div>
         </div>
       </div>
@@ -71,56 +62,25 @@ import Vue from 'vue'
 import ActivityItem from './components/ActivityItem'
 // import ActivityItem from '@/components/ActivityItem' //@ points to src folder
 import ActivityCreate from '@/components/ActivityCreate'
+import TheNavBar from '@/components/TheNavBar'
 import  { fetchActivities, fetchCategories, fetchUser } from './api'   // short for ./api/index
 // import { fetchActivities } from '@/api'   // short for ./api/index
 
 
 export default {
   name: 'App',
-  components: {ActivityItem, ActivityCreate},
+  components: {ActivityItem, ActivityCreate, TheNavBar},
   data(){
     return {
-      // isFormDisplayed: false,
       creator: 'Leiwu123',
       appName: 'Activity Planner',
-      // watchedAppName: 'Activity Planner by Filip Jerga',
-      // message: 'Hello Vue!',
-      // titleMessage: 'Title Message Vue!!!!!',
-      // isTextDisplayed: true,
-      //items: [1,2,3,4,5,6],
-      // items: {1: {name: 'Filip'}, 2: {name: 'John'}},
-      // newActivity: {
-      //   title: '',
-      //   notes: '',
-      //   category: ''
-      // },
+      isFetching: false,
+      error: null,
       user: {
-        // name: 'Filip Jerga',
-        // id: '-Aj34jknvncx98812',
       },
       activities: {
-        // '1546968934': {
-        //   id: '1546968934',
-        //   title: 'Learn Vue.js',
-        //   notes: 'I started today and it was not good.',
-        //   progress: 0,
-        //   category: '1546969049',
-        //   createdAt: 1546969144391,
-        //   updatedAt: 1546969144391
-        // },
-        // '1546969212': {
-        //   id: '1546969212',
-        //   title: 'Read Witcher Books',
-        //   notes: 'These books are super nice',
-        //   progress: 0,
-        //   category: '1546969049',
-        //   createdAt: 1546969144391,
-        //   updatedAt: 1546969144391
-        // }
       },
       categories: {
-        // '1546969049': {text: 'books'},
-        // '1546969225': {text: 'movies'}
       }        
     }
     
@@ -136,7 +96,8 @@ export default {
       // debugger
       // const activitiesKeyArray = Object.keys(this.activities)
       // console.log(activitiesKeyArray)
-      // const activityLength = activitiesKeyArray.length
+      // const activityLength = activitiesKeyArra // isFetching: false,
+      // error: null,y.length
       // return activityLength
 
       return Object.keys(this.activities).length
@@ -164,12 +125,15 @@ export default {
   //   }
   // },
   created () {
+    this.isFetching = true
     fetchActivities()
       .then(activities => {
         this.activities = activities
+        this.isFetching = false
       })
       .catch(err => {
-        console.log(err)
+        this.error = err
+        this.isFetching = false
       })
     this.user = fetchUser(),
     this.categories = fetchCategories()
@@ -222,6 +186,12 @@ body {
 }
 footer {
   background-color: #f2f6fa !important;
+}
+.fetching {
+  border: 2px solid orange;
+}
+.has-error {
+  border: 2px solid red;
 }
 .activity-motivation {
   float: right;

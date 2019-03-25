@@ -109,7 +109,7 @@ import { setTimeout } from 'timers';
         // this.$emit('activityCreated', {...activity})
         // console.log(copiedActivity)
         createActivityAPI({...this.newActivity})
-          .then((activity) => {
+          .then(activity => {
             this.resetActivity()
             this.isFormDisplayed = false
             this.$emit('activityCreated', {...activity})
